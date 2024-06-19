@@ -1,0 +1,16 @@
+
+
+
+
+
+
+
+==graph=========================================
+for nodeU in system.graph.nodes:
+    posU = self.pos_wolrd_to_screen(nodeU.pos)
+    for nodeV in nodeU.connected_nodes:
+        posV:pygame.Vector2 = nodeV.pos
+        posV = self.pos_wolrd_to_screen(posV)
+
+        pygame.draw.line(self.screen, "Gray", 
+                posU, posV, width=4)
