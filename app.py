@@ -67,17 +67,18 @@ class App:
 
         system.app = self
         
-        # self.node
-
+        tablewin = tk.Frame(root, width = 600, height = 600)
         node = list(range(5))
-        table = ttk.Treeview(root, columns=node, show='headings')
+        table = ttk.Treeview(tablewin, columns=node, show='headings')
         table.pack(fill='both')
         for i in node:
             table.heading(i, text=str(i))
-        scroll_bar = ttk.Scrollbar(root, orient="horizontal", command=table.xview)
+            table.column(i, minwidth=0, width=100, stretch=tk.NO)
+        scroll_bar = ttk.Scrollbar(tablewin, orient="horizontal", command=table.xview)
         scroll_bar.pack(side='bottom', fill='x')
         table.configure(xscrollcommand=scroll_bar.set)
-        
+        tablewin.pack()
+        tablewin.pack_propagate(0)
 
         row = [9]*5
         table.insert(parent='',index = 0, values = row)
