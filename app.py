@@ -52,8 +52,6 @@ class App:
         embed = tk.Frame(root, width = 600, height = 600) #creates embed frame for pygame window
         embed.grid(columnspan = (600), rowspan = 600) # Adds grid
         embed.pack(side = tk.LEFT) #packs window to the left
-        # buttonwin = tk.Frame(root, width = 100, height = 100)
-        # buttonwin.pack(side = tk.LEFT)
         os.environ['SDL_WINDOWID'] = str(embed.winfo_id())
         os.environ['SDL_VIDEODRIVER'] = 'windib'
         root.protocol("WM_DELETE_WINDOW", lambda: self.close_window())
@@ -67,21 +65,30 @@ class App:
 
         system.app = self
         
-        tablewin = tk.Frame(root, width = 600, height = 600)
-        node = list(range(5))
-        table = ttk.Treeview(tablewin, columns=node, show='headings')
+        self.tablewin = tk.Frame(root, width = 600, height = 500, padx = 15)
+        self.tablewin.pack()
+        self.tablewin.pack_propagate(0)
+        self.init_table()
+
+        buttonwin = tk.Frame(root, width = 600, height = 100) 
+        buttonwin.pack(side = tk.LEFT)
+
+    def init_table(self):
+        node = list(range(len(system.graph.nodes)))
+        table = ttk.Treeview(self.tablewin, columns=node, show='headings')
+        self.table = table
         table.pack(fill='both')
         for i in node:
             table.heading(i, text=str(i))
             table.column(i, minwidth=0, width=100, stretch=tk.NO)
-        scroll_bar = ttk.Scrollbar(tablewin, orient="horizontal", command=table.xview)
+        scroll_bar = ttk.Scrollbar(self.tablewin, orient="horizontal", command=table.xview)
         scroll_bar.pack(side='bottom', fill='x')
         table.configure(xscrollcommand=scroll_bar.set)
-        tablewin.pack()
-        tablewin.pack_propagate(0)
+        
 
-        row = [9]*5
-        table.insert(parent='',index = 0, values = row)
+    def table_append(self, row):
+        self.table.insert(parent='',index = 1, values = row)
+        self.table.insert(parent='',index = 1, values = row)
 
 
     def run(self):
