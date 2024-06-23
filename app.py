@@ -60,36 +60,47 @@ class App:
         # print('inited ', self)
         self.graph_screen = GraphScreen()
 
-        # button1 = tk.Button(buttonwin,text = 'Draw', width = 10,  command=lambda: self.hightlight(1))
-        # button1.pack(side=tk.LEFT)
-
         system.app = self
         
+        #Table
         self.tablewin = tk.Frame(root, width = 600, height = 500, padx = 15)
         self.tablewin.pack()
         self.tablewin.pack_propagate(0)
         self.init_table()
 
-        buttonwin = tk.Frame(root, width = 600, height = 100) 
+        #Button
+        buttonwin = tk.Frame(root, width = 600, height = 100, padx = 15) 
         buttonwin.pack(side = tk.LEFT)
+        button_next_step = tk.Button(buttonwin,text = 'Step', width = 10,  command=lambda: self.solver_step())
+        button_next_step.pack(side=tk.LEFT)
+
+        #Solver
+        self.solver = DijkstraSolver(system.graph)
+        self.solver.start()
 
     def init_table(self):
         node = list(range(len(system.graph.nodes)))
         table = ttk.Treeview(self.tablewin, columns=node, show='headings')
         self.table = table
-        table.pack(fill='both')
         for i in node:
             table.heading(i, text=str(i))
             table.column(i, minwidth=0, width=100, stretch=tk.NO)
-        scroll_bar = ttk.Scrollbar(self.tablewin, orient="horizontal", command=table.xview)
-        scroll_bar.pack(side='bottom', fill='x')
-        table.configure(xscrollcommand=scroll_bar.set)
         
+        scroll_bar_h = ttk.Scrollbar(self.tablewin, orient="horizontal", command=table.xview)
+        scroll_bar_h.pack(side='bottom', fill='x')
+        table.configure(xscrollcommand=scroll_bar_h.set)
+        
+        scroll_bar_v = ttk.Scrollbar(self.tablewin, orient="vertical", command=table.yview)
+        scroll_bar_v.pack(side=tk.RIGHT, fill=tk.Y)
+        table.configure(yscrollcommand=scroll_bar_v.set)
 
+        table.pack(fill='both', expand=1)
+        
     def table_append(self, row):
-        self.table.insert(parent='',index = 1, values = row)
-        self.table.insert(parent='',index = 1, values = row)
+        self.table.insert(parent='',index = 'end', values = row)
 
+    def solver_step(self):
+        self.solver.step()
 
     def run(self):
         self.is_run = True

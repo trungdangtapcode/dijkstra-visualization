@@ -18,8 +18,8 @@ class Graph:
         system.graph = self
         self.connect_node(0,1)
         self.connect_node(1,2)
-        self.nodes[0].hightlight1()
-        self.nodes[0].hightlight2()
+        # self.nodes[0].hightlight1()
+        # self.nodes[0].hightlight2()
 
     def connect_node(self, index1, index2):
         assert max(index1,index2) < len(self.nodes), "index is out of list of nodes"

@@ -3,6 +3,7 @@ WHITE = (255,255,255,255)
 BLACK = (0,0,0,255)
 RED = (255,0,0,255)
 PATH = ''
+INF = float('inf')
 
 GRAPH_SIZE = (600,600)
 NODE_SIZE = (64,64)
