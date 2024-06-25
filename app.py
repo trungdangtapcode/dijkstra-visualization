@@ -49,12 +49,13 @@ class App:
     def __init__(self):
         self.root = tk.Tk()
         root = self.root
-        embed = tk.Frame(root, width = 600, height = 600) #creates embed frame for pygame window
+        root.protocol("WM_DELETE_WINDOW", lambda: self.close_window())
+
+        embed = tk.Frame(root, width = 600, height = 600, bg="red") #creates embed frame for pygame window
         embed.grid(columnspan = (600), rowspan = 600) # Adds grid
         embed.pack(side = tk.LEFT) #packs window to the left
         os.environ['SDL_WINDOWID'] = str(embed.winfo_id())
         os.environ['SDL_VIDEODRIVER'] = 'windib'
-        root.protocol("WM_DELETE_WINDOW", lambda: self.close_window())
 
         #fixed init twice
         # print('inited ', self)
@@ -62,21 +63,37 @@ class App:
 
         system.app = self
         
+        #Solver_frame = Table + Button
+        solver_frame = tk.Frame(root, width = 600, height = 600, bg="red")
+        solver_frame.pack(side=tk.LEFT)
+        solver_frame.pack_propagate(0)
+
         #Table
-        self.tablewin = tk.Frame(root, width = 600, height = 500, padx = 15)
+        self.tablewin = tk.Frame(solver_frame, width = 600, height = 500)
         self.tablewin.pack()
         self.tablewin.pack_propagate(0)
         self.init_table()
 
         #Button
-        buttonwin = tk.Frame(root, width = 600, height = 100, padx = 15) 
+        buttonwin = tk.Frame(solver_frame, width = 600, height = 100) 
         buttonwin.pack(side = tk.LEFT)
         button_next_step = tk.Button(buttonwin,text = 'Step', width = 10,  command=lambda: self.solver_step())
-        button_next_step.pack(side=tk.LEFT)
+        button_next_step.pack(side=tk.LEFT, padx=15)
+        button_restart = tk.Button(buttonwin,text = 'Restart', width = 10,  command=lambda: self.init_table())
+        button_restart.pack(side=tk.LEFT, padx=15)
+        buttonwin.pack_propagate(0)
+
+        #Input
+        self.input_frame = tk.Frame(root, width= 300, height=600,bg="orange")
+        self.input_frame.pack(side=tk.RIGHT)
+        self.input_frame.pack_propagate(0)
 
         #Solver
         self.solver = DijkstraSolver(system.graph)
         self.solver.start()
+
+        # print(solver_frame.winfo_width())
+
 
     def init_table(self):
         node = list(range(len(system.graph.nodes)))
@@ -94,10 +111,19 @@ class App:
         scroll_bar_v.pack(side=tk.RIGHT, fill=tk.Y)
         table.configure(yscrollcommand=scroll_bar_v.set)
 
-        table.pack(fill='both', expand=1)
+        table.pack(fill='both', expand=1, padx=15)
         
     def table_append(self, row):
         self.table.insert(parent='',index = 'end', values = row)
+
+    def table_edit(self, value, idx = -1, col = None):
+        row_id = self.table.get_children()[idx]
+        if (col!=None):
+            row = self.table.item(row_id)['values']
+            row[col] = value
+            self.table.item(row_id, values = row)
+        else:
+            self.table.item(row_id, values = value)
 
     def solver_step(self):
         self.solver.step()

@@ -40,6 +40,11 @@ class DijkstraSolver:
             self.is_end = True
             return
         self.is_locked[u] = True
+
+        system.app.table_edit(
+            str(last[u][0])+' '+str(last[u][1])+'*'
+            ,col=u)
+
         
         nodeU = system.graph.nodes[u]
         for edge in nodeU.adj:
