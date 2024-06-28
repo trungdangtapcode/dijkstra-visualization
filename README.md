@@ -12,4 +12,4 @@ input your graph's data to textbox with following form (the reader is not very s
 
     node_U_label + node_V_label + weight
 
-![program](https://github.com/trungdangtapcode/dijkstra-visualization/tree/main/readme/demo.png)
+![demo](https://github.com/trungdangtapcode/dijkstra-visualization/blob/main/readme/demo.png)
