@@ -10,24 +10,44 @@ class Graph:
     def __init__(self):
         self.screen = system.screen
         self.visible_sprites = Camera()
-        self.nodes = [Node(pos  = pos, 
-            label = idx,
-            groups = [self.visible_sprites]) 
-            for idx, pos in enumerate([(-42,42), (42, 42), (-42,-42), (42,-42)])]
+        # self.nodes = [Node(pos  = pos, 
+        #     label = idx,
+        #     groups = [self.visible_sprites]) 
+        #     for idx, pos in enumerate([(-42,42), (42, 42), (-42,-42), (42,-42)])]
         self.edges = []
+        self.nodes =[]
+        self.labels = {}
         system.graph = self
-        self.connect_node(0,1)
-        self.connect_node(1,2)
+        # self.connect_node(0,1)
+        # self.connect_node(1,2)
         # self.nodes[0].hightlight1()
         # self.nodes[0].hightlight2()
+    def add_node(self,label):
+        if (label in self.labels):
+            return
+        node = Node(pos=(0,0), groups= [self.visible_sprites], label=label)
+        self.labels[label] = node
+        self.nodes.append(node)
 
-    def connect_node(self, index1, index2):
+    def get_node_from_label(self, label):
+        self.add_node(label)
+        return self.labels[label]
+
+    def connect_node_idx(self, index1, index2):
         assert max(index1,index2) < len(self.nodes), "index is out of list of nodes"
         if (index1==index2): 
             return
         nodeU = self.nodes[index1]
         nodeV = self.nodes[index2]
         edge = Edge(nodeU, nodeV, weight=2)
+        if (nodeU not in nodeV.connected_nodes):
+            nodeV.connect_node(nodeU, edge)
+        if (nodeV not in nodeU.connected_nodes):
+            nodeU.connect_node(nodeV, edge)
+        self.edges.append(edge)
+
+    def connect_node(self, nodeU, nodeV, weight=2):
+        edge = Edge(nodeU, nodeV, weight=weight)
         if (nodeU not in nodeV.connected_nodes):
             nodeV.connect_node(nodeU, edge)
         if (nodeV not in nodeU.connected_nodes):

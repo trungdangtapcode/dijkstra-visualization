@@ -7,6 +7,7 @@ from text import Text
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from edge import Edge
+import random
 
 class Node(pygame.sprite.Sprite):
     def __init__(self, pos: tuple, 
@@ -36,6 +37,7 @@ class Node(pygame.sprite.Sprite):
         self.force_pull_scale = 5*10**-3
         self.force_pull_max = 100
 
+        self.label = label
         self.connected_nodes = []
         self.adj = []
         self.text_sprite = Text(str(label), 32, "Green", center = self.size/2)
@@ -109,7 +111,8 @@ class Node(pygame.sprite.Sprite):
             if (vec.magnitude()<=self.force_push_dist_limit): 
                 dist2 = vec.magnitude()**2
                 force = vec.normalize()*\
-                    min(self.force_push_scale/(dist2+10**-6), self.force_push_max)
+                    min(self.force_push_scale/(dist2+10**-6), self.force_push_max)\
+                    if vec.magnitude()!=0 else pygame.math.Vector2(random.randint(-100,100),random.randint(-100,100))
                 self.add_forces(force)
 
         for node in self.connected_nodes:

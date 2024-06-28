@@ -11,12 +11,16 @@ from copy import copy
 class DijkstraSolver:
     def __init__(self, graph: Graph):
         self.graph = graph
-        self.num_nodes = len(self.graph.nodes)
         self.table = []
         self.is_end = False
         self.is_locked = [False]*self.num_nodes
+    
+    @property
+    def num_nodes(self):
+        return len(self.graph.nodes)
 
     def start(self, start_node = 0):
+        if (self.num_nodes==0): return
         self.start_node = start_node
         row = [(INF,start_node)]*self.num_nodes
         row[self.start_node] = (0,start_node)
@@ -28,11 +32,13 @@ class DijkstraSolver:
         system.app.table_append(row)
 
     def step(self):
-        if (self.is_end): return
+        if (self.is_end or self.num_nodes==0): return
         u = -1
         last = copy(self.table[-1])
+        print(last)
         for i in range(self.num_nodes):
-            if ((u==-1 or last[u]>last[i]) 
+            if (last[i]!='-' and
+                (u==-1 or last[u]>last[i]) 
                 and not self.is_locked[i]
                 and not last[i][0]==INF):
                 u = i
@@ -45,7 +51,6 @@ class DijkstraSolver:
             str(last[u][0])+' '+str(last[u][1])+'*'
             ,col=u)
 
-        
         nodeU = system.graph.nodes[u]
         for edge in nodeU.adj:
             nodeV = edge.nodeV if edge.nodeV!=nodeU else edge.nodeU
